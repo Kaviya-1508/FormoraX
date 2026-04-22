@@ -6,56 +6,91 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
+
         try {
             const res = await authAPI.login({ email, password });
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data));
             navigate('/dashboard');
-        } catch (err) {
-            setError('Invalid email or password');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Invalid email or password');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-                <h2 className="text-3xl font-bold text-center">Sign In</h2>
+        <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="form-card animate-fade-in">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl mb-2">Welcome Back</h1>
+                    <p className="text-slate-500">Sign in to continue to FormoraX</p>
+                </div>
 
-                {error && <div className="bg-red-100 text-red-700 p-3 rounded">{error}</div>}
+                {error && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm animate-slide-up">
+                        {error}
+                    </div>
+                )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full p-3 border rounded"
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full p-3 border rounded"
-                        required
-                    />
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            placeholder="you@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="input-modern"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="input-modern"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
+
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700"
+                        className="btn-gradient w-full"
+                        disabled={loading}
                     >
-                        Sign In
+                        {loading ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <span className="spinner !w-4 !h-4"></span>
+                                Signing in...
+                            </span>
+                        ) : (
+                            'Sign In'
+                        )}
                     </button>
                 </form>
 
-                <p className="text-center">
+                <p className="text-center mt-6 text-slate-500">
                     Don't have an account?{' '}
-                    <Link to="/signup" className="text-blue-600 hover:underline">
-                        Sign Up
+                    <Link to="/signup" className="text-blue-300 font-semibold hover:underline">
+                        Create one
                     </Link>
                 </p>
             </div>

@@ -22,6 +22,7 @@ function App() {
           <Route path="/forms/:id/responses" element={<Responses />} />
         </Route>
 
+        <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </BrowserRouter>

@@ -7,7 +7,6 @@ const api = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 
-// Add token to requests
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -15,6 +14,18 @@ api.interceptors.request.use((config) => {
     }
     return config;
 });
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
 
 export const authAPI = {
     signup: (data: { email: string; password: string; name: string }) =>
@@ -27,6 +38,7 @@ export const formAPI = {
     create: (data: any) => api.post('/forms', data),
     getAll: () => api.get('/forms'),
     getOne: (id: string) => api.get(`/forms/${id}`),
+    update: (id: string, data: any) => api.put(`/forms/${id}`, data),
     delete: (id: string) => api.delete(`/forms/${id}`),
 };
 
