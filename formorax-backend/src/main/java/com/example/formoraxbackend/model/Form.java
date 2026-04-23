@@ -17,7 +17,9 @@ public class Form {
     private String userId;
     private String title;
     private String description;
-    private String customSlug;  // ✅ Make sure this exists
+    
+    // ✅ ADD THIS LINE
+    private String customSlug;
     
     private List<Question> questions = new ArrayList<>();
     
@@ -25,6 +27,7 @@ public class Form {
     private Instant updatedAt = Instant.now();
     private boolean isActive = true;
     
+    // ✅ ADD THIS LINE
     private FormStats stats = new FormStats();
     
     @Data
@@ -37,6 +40,7 @@ public class Form {
         private List<String> options;
     }
     
+    // ✅ ADD THIS INNER CLASS
     @Data
     public static class FormStats {
         private int responseCount = 0;
