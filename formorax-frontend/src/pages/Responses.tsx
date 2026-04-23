@@ -239,7 +239,7 @@ export default function Responses() {
                                                         {deleting === res.id ? (
                                                             <span className="spinner !w-4 !h-4"></span>
                                                         ) : (
-                                                            '🗑️'
+                                                            '🗑️Delete'
                                                         )}
                                                     </button>
                                                 </td>
