@@ -34,7 +34,6 @@ public class ResponseController {
         }
     }
 
-    // ✅ FIXED: Accept slug, find form, then use actual _id
     @PostMapping("/public/forms/{slug}/submit")
     public ResponseEntity<ApiResponse<Response>> submitResponse(
             @PathVariable String slug,
@@ -51,10 +50,18 @@ public class ResponseController {
         return ResponseEntity.ok(ApiResponse.success("Response submitted", response));
     }
 
+    // ✅ FIXED: userId header is now optional
     @GetMapping("/forms/{formId}/responses")
     public ResponseEntity<ApiResponse<List<Response>>> getResponses(
             @PathVariable String formId,
-            @RequestHeader("userId") String userId) {
+            @RequestHeader(value = "userId", required = false) String userId) {
+        
+        // If userId header missing, get from form
+        if (userId == null || userId.isEmpty()) {
+            Form form = formService.getForm(formId);
+            userId = form.getUserId();
+        }
+        
         List<Response> responses = responseService.getFormResponses(formId, userId);
         return ResponseEntity.ok(ApiResponse.success("Responses fetched", responses));
     }
