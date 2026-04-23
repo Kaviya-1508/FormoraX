@@ -34,14 +34,20 @@ public class ResponseController {
         }
     }
 
-    @PostMapping("/public/forms/{formId}/submit")
+    // ✅ FIXED: Accept slug, find form, then use actual _id
+    @PostMapping("/public/forms/{slug}/submit")
     public ResponseEntity<ApiResponse<Response>> submitResponse(
-            @PathVariable String formId,
+            @PathVariable String slug,
             @RequestBody Map<String, Object> request) {
+        
+        Form form = formService.getFormBySlug(slug);
+        if (form == null || !form.isActive()) {
+            return ResponseEntity.notFound().build();
+        }
         
         @SuppressWarnings("unchecked")
         Map<String, Object> answers = (Map<String, Object>) request.get("answers");
-        Response response = responseService.submitResponse(formId, answers);
+        Response response = responseService.submitResponse(form.getId(), answers);
         return ResponseEntity.ok(ApiResponse.success("Response submitted", response));
     }
 
@@ -50,7 +56,6 @@ public class ResponseController {
             @PathVariable String formId,
             @RequestHeader("userId") String userId) {
         List<Response> responses = responseService.getFormResponses(formId, userId);
-        // ✅ FIXED: Added message as first argument
         return ResponseEntity.ok(ApiResponse.success("Responses fetched", responses));
     }
 }
