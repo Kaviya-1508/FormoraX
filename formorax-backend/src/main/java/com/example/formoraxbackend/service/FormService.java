@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,17 @@ public class FormService {
         form.setUserId(userId);
         form.setCreatedAt(Instant.now());
         form.setUpdatedAt(Instant.now());
+        
+        // Generate slug if not provided
+        if (form.getCustomSlug() == null || form.getCustomSlug().isEmpty()) {
+            form.setCustomSlug(UUID.randomUUID().toString().replace("-", "").substring(0, 24));
+        }
+        
+        // Initialize stats if null
+        if (form.getStats() == null) {
+            form.setStats(new Form.FormStats());
+        }
+        
         return formRepository.save(form);
     }
 
@@ -30,15 +42,14 @@ public class FormService {
                 .orElseThrow(() -> new RuntimeException("Form not found"));
     }
 
-    // ✅ NEW: Get form by slug (for public viewing)
     public Form getFormBySlug(String slug) {
         return formRepository.findByCustomSlug(slug)
                 .orElseThrow(() -> new RuntimeException("Form not found"));
     }
 
-    // ✅ NEW: Update form (without theme)
     public Form updateForm(String formId, String userId, Form updatedForm) {
         Form form = getForm(formId);
+        
         if (!form.getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized");
         }
@@ -52,7 +63,6 @@ public class FormService {
         if (updatedForm.getQuestions() != null) {
             form.setQuestions(updatedForm.getQuestions());
         }
-        // Theme lines removed - your Form model doesn't have theme field
         
         form.setUpdatedAt(Instant.now());
         return formRepository.save(form);
@@ -60,18 +70,21 @@ public class FormService {
 
     public void deleteForm(String formId, String userId) {
         Form form = getForm(formId);
+        
         if (!form.getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized");
         }
+        
         formRepository.deleteById(formId);
     }
-    
-    // ✅ NEW: Toggle form active status
+
     public Form toggleFormStatus(String formId, String userId) {
         Form form = getForm(formId);
+        
         if (!form.getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized");
         }
+        
         form.setActive(!form.isActive());
         form.setUpdatedAt(Instant.now());
         return formRepository.save(form);
