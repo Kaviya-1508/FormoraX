@@ -1,5 +1,4 @@
 import axios from 'axios';
-// Force redeploy - v1
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
@@ -13,6 +12,14 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // ✅ ADD THIS: Send userId header
+    const user = localStorage.getItem('user');
+    if (user) {
+        const userData = JSON.parse(user);
+        config.headers.userId = userData.email;
+    }
+    
     return config;
 });
 
@@ -38,7 +45,7 @@ export const authAPI = {
 export const formAPI = {
     create: (data: any) => api.post('/forms', data),
     getAll: () => api.get('/forms'),
-    getOne: (id: string) => api.get(`/public/forms/${id}`),  // ✅ FIXED
+    getOne: (id: string) => api.get(`/public/forms/${id}`),
     update: (id: string, data: any) => api.put(`/forms/${id}`, data),
     delete: (id: string) => api.delete(`/forms/${id}`),
 };
