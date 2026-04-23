@@ -36,7 +36,7 @@ public class FormService {
                 .orElseThrow(() -> new RuntimeException("Form not found"));
     }
 
-    // ✅ NEW: Update form
+    // ✅ NEW: Update form (without theme)
     public Form updateForm(String formId, String userId, Form updatedForm) {
         Form form = getForm(formId);
         if (!form.getUserId().equals(userId)) {
@@ -52,9 +52,7 @@ public class FormService {
         if (updatedForm.getQuestions() != null) {
             form.setQuestions(updatedForm.getQuestions());
         }
-        if (updatedForm.getTheme() != null) {
-            form.setTheme(updatedForm.getTheme());
-        }
+        // Theme lines removed - your Form model doesn't have theme field
         
         form.setUpdatedAt(Instant.now());
         return formRepository.save(form);
