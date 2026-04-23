@@ -21,7 +21,6 @@ public class ResponseController {
     private final ResponseService responseService;
     private final FormService formService;
 
-    // ✅ ADD THIS ENDPOINT
     @GetMapping("/public/forms/{slug}")
     public ResponseEntity<?> getPublicForm(@PathVariable String slug) {
         try {
@@ -51,6 +50,7 @@ public class ResponseController {
             @PathVariable String formId,
             @RequestHeader("userId") String userId) {
         List<Response> responses = responseService.getFormResponses(formId, userId);
-        return ResponseEntity.ok(ApiResponse.success(responses));
+        // ✅ FIXED: Added message as first argument
+        return ResponseEntity.ok(ApiResponse.success("Responses fetched", responses));
     }
 }
