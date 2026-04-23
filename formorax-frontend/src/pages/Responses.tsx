@@ -22,7 +22,7 @@ export default function Responses() {
     const fetchData = async () => {
         try {
             const [formRes, responsesRes] = await Promise.all([
-                formAPI.getOne(id!),
+                formAPI.getForm(id!),
                 responseAPI.getResponses(id!),
             ]);
 
