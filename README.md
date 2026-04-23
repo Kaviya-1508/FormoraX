@@ -1,6 +1,5 @@
 # 🚀 FormoraX — Forms & Feedback Management System
 
-![FormoraX Banner](https://via.placeholder.com/1200x400/667eea/ffffff?text=FormoraX+-+Forms+%26+Feedback+System)
 
 A full-stack web application that allows users to create custom forms, share them via links, collect anonymous responses, and manage everything in a personal dashboard.
 
