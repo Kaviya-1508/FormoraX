@@ -20,12 +20,12 @@ public class FormService {
         form.setCreatedAt(Instant.now());
         form.setUpdatedAt(Instant.now());
         
-        // Generate slug if not provided
+        // ✅ ADD THIS: Generate slug if not provided
         if (form.getCustomSlug() == null || form.getCustomSlug().isEmpty()) {
             form.setCustomSlug(UUID.randomUUID().toString().replace("-", "").substring(0, 24));
         }
         
-        // Initialize stats if null
+        // ✅ ADD THIS: Initialize stats if null
         if (form.getStats() == null) {
             form.setStats(new Form.FormStats());
         }
@@ -42,6 +42,7 @@ public class FormService {
                 .orElseThrow(() -> new RuntimeException("Form not found"));
     }
 
+    // ✅ ADD THIS METHOD
     public Form getFormBySlug(String slug) {
         return formRepository.findByCustomSlug(slug)
                 .orElseThrow(() -> new RuntimeException("Form not found"));
@@ -49,20 +50,13 @@ public class FormService {
 
     public Form updateForm(String formId, String userId, Form updatedForm) {
         Form form = getForm(formId);
-        
         if (!form.getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized");
         }
         
-        if (updatedForm.getTitle() != null) {
-            form.setTitle(updatedForm.getTitle());
-        }
-        if (updatedForm.getDescription() != null) {
-            form.setDescription(updatedForm.getDescription());
-        }
-        if (updatedForm.getQuestions() != null) {
-            form.setQuestions(updatedForm.getQuestions());
-        }
+        if (updatedForm.getTitle() != null) form.setTitle(updatedForm.getTitle());
+        if (updatedForm.getDescription() != null) form.setDescription(updatedForm.getDescription());
+        if (updatedForm.getQuestions() != null) form.setQuestions(updatedForm.getQuestions());
         
         form.setUpdatedAt(Instant.now());
         return formRepository.save(form);
@@ -70,23 +64,7 @@ public class FormService {
 
     public void deleteForm(String formId, String userId) {
         Form form = getForm(formId);
-        
-        if (!form.getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
-        }
-        
+        if (!form.getUserId().equals(userId)) throw new RuntimeException("Unauthorized");
         formRepository.deleteById(formId);
-    }
-
-    public Form toggleFormStatus(String formId, String userId) {
-        Form form = getForm(formId);
-        
-        if (!form.getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
-        }
-        
-        form.setActive(!form.isActive());
-        form.setUpdatedAt(Instant.now());
-        return formRepository.save(form);
     }
 }
