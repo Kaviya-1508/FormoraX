@@ -44,10 +44,12 @@ export default function Dashboard() {
         setTimeout(() => setToast(null), 3000);
     };
 
-    const copyLink = (formId: string, formTitle: string) => {
-        const link = `${window.location.origin}/form/${formId}`;
+    // ✅ FIXED: Use customSlug instead of id
+    const copyLink = (form: any) => {
+        const slug = form.customSlug || form.id;
+        const link = `${window.location.origin}/form/${slug}`;
         navigator.clipboard.writeText(link);
-        showToast(`📋 Link for "${formTitle}" copied! Share this URL with anyone.`);
+        showToast(`📋 Link for "${form.title || 'Untitled Form'}" copied! Share this URL with anyone.`);
     };
 
     const deleteForm = async (formId: string, title: string) => {
@@ -266,8 +268,9 @@ export default function Dashboard() {
                                     </div>
 
                                     <div className="flex flex-wrap gap-2">
+                                        {/* ✅ FIXED: Pass entire form object */}
                                         <button
-                                            onClick={() => copyLink(form.id, form.title || 'Untitled Form')}
+                                            onClick={() => copyLink(form)}
                                             className="px-4 py-2 rounded-xl text-sm font-semibold bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:shadow-lg transition-all"
                                         >
                                             📋 Copy Link
