@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/forms")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class FormController {
 
     private final FormService formService;
