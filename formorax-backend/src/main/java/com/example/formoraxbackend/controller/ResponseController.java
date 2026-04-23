@@ -1,6 +1,6 @@
 package com.example.formoraxbackend.controller;
 
-import com.example.formoraxbackend.dto.response.ApiResponse;
+import com.example.formoraxbackend.dto.ApiResponse;
 import com.example.formoraxbackend.model.Form;
 import com.example.formoraxbackend.model.Response;
 import com.example.formoraxbackend.service.FormService;
