@@ -45,7 +45,8 @@ export const authAPI = {
 export const formAPI = {
     create: (data: any) => api.post('/forms', data),
     getAll: () => api.get('/forms'),
-    getOne: (id: string) => api.get(`/public/forms/${id}`),
+    getOne: (slug: string) => api.get(`/public/forms/${slug}`),  // For public viewing
+    getForm: (id: string) => api.get(`/forms/${id}`),            
     update: (id: string, data: any) => api.put(`/forms/${id}`, data),
     delete: (id: string) => api.delete(`/forms/${id}`),
 };
