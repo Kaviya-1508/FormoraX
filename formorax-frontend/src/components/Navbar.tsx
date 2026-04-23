@@ -14,28 +14,22 @@ export default function Navbar({ user }: NavbarProps) {
     };
 
     return (
-        <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm">
+        <nav className="sticky top-0 z-40 bg-[#1a1a2e]/80 backdrop-blur-xl border-b border-[#8b5cf6]/20 shadow-lg">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-8">
                         <h1
                             onClick={() => navigate('/dashboard')}
-                            className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent cursor-pointer"
+                            className="text-2xl font-extrabold bg-gradient-to-r from-[#a78bfa] to-[#ec4899] bg-clip-text text-transparent cursor-pointer"
                         >
                             FormoraX
                         </h1>
 
                         <div className="hidden md:flex items-center gap-1">
-                            <button
-                                onClick={() => navigate('/dashboard')}
-                                className="relative px-3 py-2 text-gray-700 font-medium hover:text-blue-600 transition-colors"
-                            >
+                            <button onClick={() => navigate('/dashboard')} className="nav-link">
                                 Dashboard
                             </button>
-                            <button
-                                onClick={() => navigate('/forms/new')}
-                                className="relative px-3 py-2 text-gray-700 font-medium hover:text-blue-600 transition-colors"
-                            >
+                            <button onClick={() => navigate('/forms/new')} className="nav-link">
                                 Create Form
                             </button>
                         </div>
@@ -43,17 +37,17 @@ export default function Navbar({ user }: NavbarProps) {
 
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-r from-[#6366f1] to-[#ec4899] flex items-center justify-center text-white font-bold text-sm">
                                 {user?.name?.slice(0, 2).toUpperCase() || 'U'}
                             </div>
-                            <span className="hidden sm:block text-sm font-medium text-gray-700">
+                            <span className="hidden sm:block text-[#e2e8f0] font-medium">
                                 {user?.name}
                             </span>
                         </div>
 
                         <button
                             onClick={handleLogout}
-                            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-red-600 transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-[#94a3b8] hover:text-[#ec4899] transition-colors"
                         >
                             Logout
                         </button>

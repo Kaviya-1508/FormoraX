@@ -8,12 +8,19 @@ export default function Dashboard() {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState<string | null>(null);
+    const [showShareTip, setShowShareTip] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const userData = localStorage.getItem('user');
         if (userData) setUser(JSON.parse(userData));
         fetchForms();
+
+        // Check if user has seen the tip before
+        const hasSeenTip = localStorage.getItem('hasSeenShareTip');
+        if (hasSeenTip) {
+            setShowShareTip(false);
+        }
 
         // ✅ Auto-refresh when window gets focus
         const handleFocus = () => fetchForms();
@@ -63,7 +70,7 @@ export default function Dashboard() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Stats Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
                     {/* Total Forms Card */}
                     <div
                         className="relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl"
@@ -77,8 +84,8 @@ export default function Dashboard() {
                         <div className="relative p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-white/80 text-sm font-medium mb-1">Total Forms</p>
-                                    <p className="text-white text-4xl font-bold">{forms.length}</p>
+                                    <p className="text-white/90 text-sm font-semibold mb-1 uppercase tracking-wider">Total Forms</p>
+                                    <p className="text-white text-5xl font-bold">{forms.length}</p>
                                 </div>
                                 <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-3xl border border-white/30">
                                     📝
@@ -100,8 +107,8 @@ export default function Dashboard() {
                         <div className="relative p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-white/80 text-sm font-medium mb-1">Active Forms</p>
-                                    <p className="text-white text-4xl font-bold">
+                                    <p className="text-white/90 text-sm font-semibold mb-1 uppercase tracking-wider">Active Forms</p>
+                                    <p className="text-white text-5xl font-bold">
                                         {forms.filter(f => f.isActive !== false).length}
                                     </p>
                                 </div>
@@ -125,8 +132,8 @@ export default function Dashboard() {
                         <div className="relative p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-white/80 text-sm font-medium mb-1">Total Responses</p>
-                                    <p className="text-white text-4xl font-bold">
+                                    <p className="text-white/90 text-sm font-semibold mb-1 uppercase tracking-wider">Total Responses</p>
+                                    <p className="text-white text-5xl font-bold">
                                         {forms.reduce((sum, f) => sum + (f.stats?.responseCount || 0), 0)}
                                     </p>
                                 </div>
@@ -138,20 +145,63 @@ export default function Dashboard() {
                     </div>
                 </div>
 
+                {/* Share Info Banner - Right after stats */}
+                {showShareTip && (
+                    <div className="mb-6 p-5 rounded-2xl animate-fade-in relative overflow-hidden"
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(236, 72, 153, 0.1) 100%)',
+                            border: '1.5px solid rgba(168, 85, 247, 0.3)',
+                            boxShadow: '0 10px 30px -5px rgba(168, 85, 247, 0.2)'
+                        }}
+                    >
+                        <button
+                            onClick={() => {
+                                setShowShareTip(false);
+                                localStorage.setItem('hasSeenShareTip', 'true');
+                            }}
+                            className="absolute top-3 right-3 text-white/50 hover:text-white/80 transition-colors text-xl"
+                        >
+                            ✕
+                        </button>
+
+                        <div className="flex items-start gap-4">
+                            <div className="text-4xl">📋</div>
+                            <div className="flex-1">
+                                <h3 className="text-white font-bold text-lg mb-2">📢 How to get responses:</h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-white font-bold text-xs">1</span>
+                                        <span className="text-gray-200">Click <strong className="text-white">📋 Copy Link</strong> on any form</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-6 h-6 rounded-full bg-pink-500/30 flex items-center justify-center text-white font-bold text-xs">2</span>
+                                        <span className="text-gray-200">Share the link with anyone</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-white font-bold text-xs">3</span>
+                                        <span className="text-gray-200">Click <strong className="text-white">📊 View</strong> to see responses</span>
+                                    </div>
+                                </div>
+                                <p className="text-gray-300 text-xs mt-3 italic">💡 Tip: Anyone with the link can respond — no login required!</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Header with Refresh Button */}
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-semibold text-white drop-shadow-md">My Forms</h2>
+                    <h2 className="text-3xl font-bold text-white drop-shadow-lg">My Forms</h2>
                     <div className="flex gap-3">
                         <button
                             onClick={fetchForms}
-                            className="px-4 py-2 rounded-xl font-medium text-white/80 hover:text-white transition-all"
+                            className="px-4 py-2 rounded-xl font-semibold text-white/90 hover:text-white transition-all border border-white/30"
                             style={{ background: 'rgba(255,255,255,0.1)' }}
                         >
                             🔄 Refresh
                         </button>
                         <button
                             onClick={() => navigate('/forms/new')}
-                            className="px-5 py-2.5 rounded-xl font-medium text-white transition-all duration-300 hover:scale-105"
+                            className="px-5 py-2.5 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105"
                             style={{
                                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                                 boxShadow: '0 10px 25px -5px rgba(102, 126, 234, 0.4)'
@@ -162,24 +212,24 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Forms List - rest unchanged */}
+                {/* Forms List */}
                 {loading ? (
                     <div className="space-y-4">
                         {[1, 2, 3].map(i => (
                             <div key={i} className="glass-card p-6 animate-pulse">
-                                <div className="h-6 w-48 bg-white/30 rounded mb-2"></div>
-                                <div className="h-4 w-32 bg-white/20 rounded"></div>
+                                <div className="h-6 w-48 bg-white/20 rounded mb-2"></div>
+                                <div className="h-4 w-32 bg-white/15 rounded"></div>
                             </div>
                         ))}
                     </div>
                 ) : forms.length === 0 ? (
                     <div className="glass-card p-12 text-center">
                         <div className="text-6xl mb-4">📋</div>
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">No forms yet</h3>
-                        <p className="text-gray-600 mb-6">Create your first form to start collecting responses</p>
+                        <h3 className="text-2xl font-bold text-white mb-2">No forms yet</h3>
+                        <p className="text-gray-300 text-lg mb-6">Create your first form to start collecting responses</p>
                         <button
                             onClick={() => navigate('/forms/new')}
-                            className="px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:scale-105"
+                            className="px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105"
                             style={{
                                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                                 boxShadow: '0 10px 25px -5px rgba(102, 126, 234, 0.4)'
@@ -195,21 +245,21 @@ export default function Dashboard() {
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
-                                            <h3 className="text-xl font-semibold text-gray-800">{form.title || 'Untitled Form'}</h3>
+                                            <h3 className="text-xl font-bold text-white">{form.title || 'Untitled Form'}</h3>
                                             {form.isActive === false && (
-                                                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200/80 text-gray-700">
+                                                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white">
                                                     Draft
                                                 </span>
                                             )}
                                         </div>
-                                        <p className="text-gray-600 text-sm mb-2">
+                                        <p className="text-gray-300 text-sm mb-2 font-medium">
                                             Created {new Date(form.createdAt).toLocaleDateString()}
                                         </p>
                                         <div className="flex items-center gap-4 text-sm">
-                                            <span className="flex items-center gap-1 text-gray-600">
+                                            <span className="flex items-center gap-1 text-gray-300 font-medium">
                                                 <span>📊</span> {form.stats?.responseCount || 0} responses
                                             </span>
-                                            <span className="flex items-center gap-1 text-gray-600">
+                                            <span className="flex items-center gap-1 text-gray-300 font-medium">
                                                 <span>❓</span> {form.questions?.length || 0} questions
                                             </span>
                                         </div>
@@ -218,25 +268,25 @@ export default function Dashboard() {
                                     <div className="flex flex-wrap gap-2">
                                         <button
                                             onClick={() => copyLink(form.id, form.title || 'Untitled Form')}
-                                            className="px-4 py-2 rounded-xl text-sm font-medium bg-white/70 backdrop-blur-sm border border-white/40 text-gray-700 hover:bg-white hover:shadow-lg transition-all"
+                                            className="px-4 py-2 rounded-xl text-sm font-semibold bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:shadow-lg transition-all"
                                         >
                                             📋 Copy Link
                                         </button>
                                         <button
                                             onClick={() => navigate(`/forms/${form.id}/responses`)}
-                                            className="px-4 py-2 rounded-xl text-sm font-medium bg-white/70 backdrop-blur-sm border border-white/40 text-gray-700 hover:bg-white hover:shadow-lg transition-all"
+                                            className="px-4 py-2 rounded-xl text-sm font-semibold bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:shadow-lg transition-all"
                                         >
                                             📊 View
                                         </button>
                                         <button
                                             onClick={() => navigate(`/forms/${form.id}/edit`)}
-                                            className="px-4 py-2 rounded-xl text-sm font-medium bg-white/70 backdrop-blur-sm border border-white/40 text-gray-700 hover:bg-white hover:shadow-lg transition-all"
+                                            className="px-4 py-2 rounded-xl text-sm font-semibold bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:shadow-lg transition-all"
                                         >
                                             ✏️ Edit
                                         </button>
                                         <button
                                             onClick={() => deleteForm(form.id, form.title)}
-                                            className="px-4 py-2 rounded-xl text-sm font-medium bg-red-100/70 backdrop-blur-sm border border-red-200/40 text-red-600 hover:bg-red-200 hover:shadow-lg transition-all"
+                                            className="px-4 py-2 rounded-xl text-sm font-semibold bg-red-500/30 backdrop-blur-sm border border-red-300/40 text-white hover:bg-red-500/50 hover:shadow-lg transition-all"
                                         >
                                             🗑️ Delete
                                         </button>
@@ -249,7 +299,7 @@ export default function Dashboard() {
             </main>
 
             {toast && (
-                <div className="fixed bottom-6 right-6 px-6 py-3 rounded-xl shadow-2xl bg-white/95 backdrop-blur-xl border border-white/50 z-50 font-medium text-gray-800 animate-slide-up">
+                <div className="fixed bottom-6 right-6 px-6 py-3 rounded-xl shadow-2xl bg-white/95 backdrop-blur-xl border border-white/50 z-50 font-semibold text-gray-800 animate-slide-up">
                     {toast}
                 </div>
             )}

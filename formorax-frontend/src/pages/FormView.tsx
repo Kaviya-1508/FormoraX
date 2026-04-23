@@ -94,14 +94,18 @@ export default function FormView() {
             <div className="min-h-screen flex items-center justify-center p-4">
                 <div className="form-card text-center py-12">
                     <div className="text-6xl mb-4">✅</div>
-                    <h2 className="text-2xl font-bold text-gradient mb-2">Response Submitted!</h2>
-                    <p className="text-slate-600">Thank you for your response.</p>
+                    <h2 className="text-3xl font-bold text-white mb-2">Response Submitted!</h2>
+                    <p className="text-gray-300 text-lg mb-6">Thank you for your response.</p>
                     <button
                         onClick={() => {
                             setSubmitted(false);
                             setAnswers({});
                         }}
-                        className="mt-6 btn-gradient"
+                        className="mt-6 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105"
+                        style={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            boxShadow: '0 10px 25px -5px rgba(102, 126, 234, 0.4)'
+                        }}
                     >
                         Submit Another Response
                     </button>
@@ -116,17 +120,17 @@ export default function FormView() {
         <div className="min-h-screen py-8 px-4">
             <div className="max-w-2xl mx-auto">
                 <div className="glass-card p-8">
-                    <h1 className="text-3xl mb-2">{form.title || 'Untitled Form'}</h1>
+                    <h1 className="text-4xl font-bold text-white mb-2">{form.title || 'Untitled Form'}</h1>
                     {form.description && (
-                        <p className="text-slate-600 mb-6">{form.description}</p>
+                        <p className="text-gray-300 text-lg mb-6">{form.description}</p>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {form.questions?.map((q: any, index: number) => (
                             <div key={q.id || index} className="space-y-2">
-                                <label className="block font-medium text-slate-700">
+                                <label className="block font-semibold text-white text-lg">
                                     {q.label || `Question ${index + 1}`}
-                                    {q.required && <span className="text-red-500 ml-1">*</span>}
+                                    {q.required && <span className="text-red-400 ml-1">*</span>}
                                 </label>
 
                                 {q.type === 'text' && (
@@ -138,7 +142,7 @@ export default function FormView() {
                                             setAnswers({ ...answers, [q.id]: e.target.value });
                                             setErrors({ ...errors, [q.id]: '' });
                                         }}
-                                        className={`input-modern ${errors[q.id] ? '!border-red-300' : ''}`}
+                                        className={`input-modern ${errors[q.id] ? '!border-red-400' : ''}`}
                                         disabled={submitting}
                                     />
                                 )}
@@ -150,7 +154,7 @@ export default function FormView() {
                                             setAnswers({ ...answers, [q.id]: e.target.value });
                                             setErrors({ ...errors, [q.id]: '' });
                                         }}
-                                        className={`input-modern ${errors[q.id] ? '!border-red-300' : ''}`}
+                                        className={`input-modern ${errors[q.id] ? '!border-red-400' : ''}`}
                                         disabled={submitting}
                                     >
                                         <option value="">Select an option</option>
@@ -161,14 +165,18 @@ export default function FormView() {
                                 )}
 
                                 {errors[q.id] && (
-                                    <p className="text-red-500 text-sm">{errors[q.id]}</p>
+                                    <p className="text-red-400 text-sm font-medium">{errors[q.id]}</p>
                                 )}
                             </div>
                         ))}
 
                         <button
                             type="submit"
-                            className="btn-gradient w-full"
+                            className="w-full px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105"
+                            style={{
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                boxShadow: '0 10px 25px -5px rgba(102, 126, 234, 0.4)'
+                            }}
                             disabled={submitting}
                         >
                             {submitting ? (
@@ -183,8 +191,8 @@ export default function FormView() {
                     </form>
                 </div>
 
-                <p className="text-center text-white/60 text-sm mt-4">
-                    Powered by FormoraX
+                <p className="text-center text-gray-400 text-sm mt-4 font-medium">
+                    Powered by <span className="text-white font-semibold">FormoraX</span>
                 </p>
             </div>
         </div>

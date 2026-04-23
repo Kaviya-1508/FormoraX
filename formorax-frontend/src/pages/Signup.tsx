@@ -40,22 +40,32 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="form-card animate-fade-in">
+        <div
+            className="min-h-screen flex items-center justify-center p-4"
+            style={{
+                background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #a855f7 100%)',
+            }}
+        >
+            {/* Animated background orbs */}
+            <div className="absolute top-10 right-20 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl animate-float"></div>
+            <div className="absolute bottom-10 left-10 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+            <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-cyan-400/10 rounded-full blur-3xl animate-pulse"></div>
+
+            <div className="form-card animate-fade-in relative z-10">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl mb-2">Create Account</h1>
-                    <p className="text-slate-500">Join FormoraX today</p>
+                    <h1 className="text-4xl font-bold text-white mb-2">Create Account</h1>
+                    <p className="text-gray-200 text-lg">Join FormoraX today</p>
                 </div>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm animate-slide-up">
+                    <div className="mb-4 p-3 bg-red-500/20 border border-red-400/50 rounded-xl text-white text-sm animate-slide-up">
                         {error}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                        <label className="block text-sm font-semibold text-white/90 mb-1">
                             Full Name
                         </label>
                         <input
@@ -70,7 +80,7 @@ export default function Signup() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                        <label className="block text-sm font-semibold text-white/90 mb-1">
                             Email
                         </label>
                         <input
@@ -85,7 +95,7 @@ export default function Signup() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                        <label className="block text-sm font-semibold text-white/90 mb-1">
                             Password
                         </label>
                         <input
@@ -100,7 +110,7 @@ export default function Signup() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-600 mb-1">
+                        <label className="block text-sm font-semibold text-white/90 mb-1">
                             Confirm Password
                         </label>
                         <input
@@ -116,7 +126,11 @@ export default function Signup() {
 
                     <button
                         type="submit"
-                        className="btn-gradient w-full"
+                        className="w-full px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:scale-105 mt-6"
+                        style={{
+                            background: 'linear-gradient(135deg, #4facfe 0%, #a855f7 100%)',
+                            boxShadow: '0 10px 25px -5px rgba(79, 172, 254, 0.4)'
+                        }}
                         disabled={loading}
                     >
                         {loading ? (
@@ -130,9 +144,9 @@ export default function Signup() {
                     </button>
                 </form>
 
-                <p className="text-center mt-6 text-slate-500">
+                <p className="text-center mt-6 text-gray-200">
                     Already have an account?{' '}
-                    <Link to="/login" className="text-blue-300 font-semibold hover:underline">
+                    <Link to="/login" className="text-white font-bold hover:underline">
                         Sign In
                     </Link>
                 </p>

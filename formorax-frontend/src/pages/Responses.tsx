@@ -28,31 +28,22 @@ export default function Responses() {
 
             setForm(formRes.data);
 
-            // Handle different response formats
             const responseData = responsesRes.data;
             let responsesArray: any[] = [];
 
             if (responseData && typeof responseData === 'object') {
                 if (Array.isArray(responseData)) {
-                    // Direct array
                     responsesArray = responseData;
                 } else if (responseData.data && Array.isArray(responseData.data)) {
-                    // Wrapped in ApiResponse { data: [...] }
                     responsesArray = responseData.data;
                 } else if (responseData.responses && Array.isArray(responseData.responses)) {
-                    // Wrapped in { responses: [...] }
                     responsesArray = responseData.responses;
                 } else if (responseData.content && Array.isArray(responseData.content)) {
-                    // Spring Page format
                     responsesArray = responseData.content;
-                } else {
-                    console.warn('Unknown response format, using empty array');
                 }
             }
 
             setResponses(responsesArray);
-            console.log('📊 Form:', formRes.data);
-            console.log('📊 Responses:', responsesArray);
         } catch (err) {
             console.error('Failed to load responses:', err);
             alert('Failed to load responses');
@@ -67,7 +58,6 @@ export default function Responses() {
 
         setDeleting(responseId);
         try {
-            // Remove from UI immediately
             setResponses(responses.filter(r => r.id !== responseId));
         } catch (err) {
             alert('Failed to delete response');
@@ -121,18 +111,18 @@ export default function Responses() {
         const answer = extractAnswer(response, question);
 
         if (!answer || answer.trim() === '') {
-            return <span className="text-gray-400 italic">—</span>;
+            return <span className="text-gray-500 italic font-normal">—</span>;
         }
 
         if (answer.length > 50) {
             return (
-                <span title={answer}>
+                <span title={answer} className="text-gray-200 font-medium">
                     {answer.substring(0, 47)}...
                 </span>
             );
         }
 
-        return answer;
+        return <span className="text-gray-200 font-medium">{answer}</span>;
     };
 
     if (!user) return null;
@@ -142,18 +132,19 @@ export default function Responses() {
             <Navbar user={user} />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="mb-3 px-4 py-2 rounded-xl text-sm font-medium bg-white/70 backdrop-blur-sm border border-white/40 text-gray-700 hover:bg-white hover:shadow-lg transition-all"
+                            className="btn-secondary !px-4 !py-2 mb-3"
                         >
                             ← Back to Dashboard
                         </button>
-                        <h1 className="text-3xl font-bold text-gray-800">
+                        <h1 className="text-4xl font-bold text-white mb-1">
                             {form?.title || 'Untitled Form'}
                         </h1>
-                        <p className="text-gray-600 mt-1 text-lg">
+                        <p className="text-gray-300 text-lg">
                             {responses.length} {responses.length === 1 ? 'response' : 'responses'} received
                         </p>
                     </div>
@@ -161,82 +152,95 @@ export default function Responses() {
                     {responses.length > 0 && (
                         <button
                             onClick={exportCSV}
-                            className="px-5 py-2.5 rounded-xl font-medium text-white transition-all duration-300 hover:scale-105 flex items-center gap-2"
-                            style={{
-                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                                boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.4)'
-                            }}
+                            className="btn-primary flex items-center gap-2"
                         >
                             📥 Export to CSV
                         </button>
                     )}
                 </div>
 
+                {/* Content */}
                 {loading ? (
                     <div className="flex justify-center py-12">
                         <div className="spinner"></div>
                     </div>
                 ) : responses.length === 0 ? (
                     <div className="glass-card p-12 text-center">
-                        <div className="text-6xl mb-4">📭</div>
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">No responses yet</h3>
-                        <p className="text-gray-600 mb-6">Share your form to start collecting responses</p>
+                        <div className="text-7xl mb-4">📭</div>
+                        <h3 className="empty-state-title mb-2">No responses yet</h3>
+                        <p className="empty-state-desc mb-6">Share your form to start collecting responses</p>
                         <button
                             onClick={() => {
                                 const link = `${window.location.origin}/form/${id}`;
                                 navigator.clipboard.writeText(link);
                                 alert('📋 Form link copied to clipboard!');
                             }}
-                            className="px-6 py-3 rounded-xl font-medium text-white transition-all duration-300 hover:scale-105"
-                            style={{
-                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                boxShadow: '0 10px 25px -5px rgba(102, 126, 234, 0.4)'
-                            }}
+                            className="btn-primary"
                         >
                             📋 Copy Form Link
                         </button>
+
+                        {/* Debug Info */}
+                        <div className="mt-8 p-4 bg-white/5 rounded-xl text-left border border-white/10">
+                            <p className="text-sm font-semibold text-gray-300 mb-2">Debug Info:</p>
+                            <p className="text-xs text-gray-400">Form ID: {id}</p>
+                            <p className="text-xs text-gray-400">Form has {form?.questions?.length || 0} questions</p>
+                            <p className="text-xs text-gray-400">Form link: {window.location.origin}/form/{id}</p>
+                        </div>
                     </div>
                 ) : (
                     <>
                         <div className="glass-card overflow-hidden">
                             <div className="overflow-x-auto scrollbar-custom">
                                 <table className="w-full">
-                                    <thead className="bg-white/30 border-b border-white/20">
+                                    <thead className="bg-white/5 border-b border-white/10">
                                         <tr>
-                                            <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 w-12">#</th>
+                                            <th className="px-4 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider w-12">#</th>
                                             {form?.questions?.map((q: any) => (
-                                                <th key={q.id} className="px-4 py-4 text-left text-sm font-semibold text-gray-700 min-w-[150px]">
-                                                    {q.label || 'Question'}
-                                                    {q.required && <span className="text-red-500 ml-1">*</span>}
+                                                <th key={q.id} className="px-4 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider min-w-[150px]">
+                                                    <div className="flex items-center gap-1">
+                                                        {q.label || 'Question'}
+                                                        {q.required && <span className="text-pink-400 text-xs">*</span>}
+                                                    </div>
+                                                    <span className="text-xs font-normal text-gray-400 block normal-case tracking-normal">
+                                                        {q.type === 'text' ? '📝 Text' : '☑️ Choice'}
+                                                    </span>
                                                 </th>
                                             ))}
-                                            <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 w-48">Submitted</th>
-                                            <th className="px-4 py-4 text-left text-sm font-semibold text-gray-700 w-20"></th>
+                                            <th className="px-4 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider w-48">Submitted</th>
+                                            <th className="px-4 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider w-20"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {responses.map((res, i) => (
-                                            <tr key={res.id || i} className="table-row-hover border-b border-white/10 last:border-0">
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-500">{i + 1}</td>
+                                            <tr key={res.id || i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                                <td className="px-4 py-4 text-sm font-semibold text-gray-300">{i + 1}</td>
 
                                                 {form?.questions?.map((q: any) => (
-                                                    <td key={q.id} className="px-4 py-4 text-sm text-gray-800">
+                                                    <td key={q.id} className="px-4 py-4 text-sm">
                                                         {getAnswerDisplay(res, q)}
                                                     </td>
                                                 ))}
 
-                                                <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                                    {res.submittedAt ? new Date(res.submittedAt).toLocaleString() : 'Unknown'}
+                                                <td className="px-4 py-4 text-sm text-gray-400 whitespace-nowrap font-medium">
+                                                    {res.submittedAt ? new Date(res.submittedAt).toLocaleString(undefined, {
+                                                        dateStyle: 'medium',
+                                                        timeStyle: 'short'
+                                                    }) : 'Unknown'}
                                                 </td>
 
                                                 <td className="px-4 py-4">
                                                     <button
                                                         onClick={() => deleteResponse(res.id)}
                                                         disabled={deleting === res.id}
-                                                        className="p-2 rounded-lg text-red-500 hover:bg-red-100 transition-colors disabled:opacity-50"
+                                                        className="p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                                                         title="Delete response"
                                                     >
-                                                        {deleting === res.id ? '...' : '🗑️'}
+                                                        {deleting === res.id ? (
+                                                            <span className="spinner !w-4 !h-4"></span>
+                                                        ) : (
+                                                            '🗑️'
+                                                        )}
                                                     </button>
                                                 </td>
                                             </tr>
@@ -246,13 +250,14 @@ export default function Responses() {
                             </div>
                         </div>
 
-                        <div className="mt-4 text-gray-600 text-sm flex justify-between items-center">
-                            <span>
+                        {/* Footer */}
+                        <div className="mt-4 text-gray-400 text-sm flex justify-between items-center">
+                            <span className="font-medium">
                                 Showing {responses.length} response{responses.length !== 1 ? 's' : ''}
                             </span>
                             <button
                                 onClick={fetchData}
-                                className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+                                className="btn-secondary !px-4 !py-2 text-sm"
                             >
                                 🔄 Refresh
                             </button>
