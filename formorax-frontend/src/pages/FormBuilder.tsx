@@ -17,7 +17,7 @@ export default function FormBuilder() {
     const [user, setUser] = useState<any>(null);
     const [title, setTitle] = useState('Untitled Form');
     const [questions, setQuestions] = useState<Question[]>([]);
-    const [loading, setLoading] = useState(false);
+    //const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
