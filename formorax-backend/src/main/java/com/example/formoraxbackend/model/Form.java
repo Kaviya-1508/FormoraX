@@ -17,7 +17,7 @@ public class Form {
     private String userId;
     private String title;
     private String description;
-    private String customSlug;  // ✅ For public sharing
+    private String customSlug;  // ✅ Make sure this exists
     
     private List<Question> questions = new ArrayList<>();
     
@@ -25,7 +25,6 @@ public class Form {
     private Instant updatedAt = Instant.now();
     private boolean isActive = true;
     
-    // Stats for dashboard
     private FormStats stats = new FormStats();
     
     @Data
